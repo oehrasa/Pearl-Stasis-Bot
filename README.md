@@ -42,5 +42,5 @@ If you want to learn more, more video tutorials are [there,](https://www.youtube
 [<img src="https://img.youtube.com/vi/ssWE0kXDGJE/0.jpg" alt="tutorial 3" width="200">](https://www.youtube.com/watch?v=ssWE0kXDGJE)
 [<img src="https://img.youtube.com/vi/walbRk20KYU/0.jpg" alt="tutorial 4" width="200">](https://www.youtube.com/watch?v=walbRk20KYU)
 
-## Contact me
-[Join my Discord]([https://discord.gg/yourInviteCode](https://discord.gg/RkBDfNeZJH))
+## Contact me for discussion
+[![Discord](https://img.shields.io/static/v1.svg?label=&message=DISCORD&color=blue&logo=discord&style=for-the-badge)](https://discord.gg/RkBDfNeZJH)

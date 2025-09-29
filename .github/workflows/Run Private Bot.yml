@@ -1,0 +1,57 @@
+name: Run Private Bot
+
+on:
+  workflow_dispatch:   # Manual trigger
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+
+permissions:
+  contents: none   # no access to this public repo
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    env:
+      OEHRASA_PW: ${{ secrets.OEHRASA_PW }}
+      ECCEN_PW: ${{ secrets.ECCEN_PW }}
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Clone private repo
+        run: |
+          git clone git@github.com:oehrasa/Shush-its-a-secret.git
+          cd Shush-its-a-secret
+          ls -la
+
+      - name: Install dependencies
+        run: |
+          cd Shush-its-a-secret
+          npm ci || npm install
+
+      - name: Run bot
+        run: |
+          cd Shush-its-a-secret
+          node fio.js   # change if your entry point script is different
+
+      - name: Commit & push changes
+        if: always()
+        run: |
+          cd Shush-its-a-secret
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add oeh-bot.log.txt data/pearls.json
+          git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
+          git push origin main

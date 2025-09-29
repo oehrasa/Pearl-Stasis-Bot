@@ -44,7 +44,7 @@ jobs:
       - name: Run bot
         run: |
           cd Shush-its-a-secret
-          node fio.js   # change if your entry point script is different
+          node ecc.js   # change if your entry point script is different
 
       - name: Commit & push changes
         if: always()

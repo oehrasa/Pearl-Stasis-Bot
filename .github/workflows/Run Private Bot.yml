@@ -38,11 +38,6 @@ jobs:
           cd Shush-its-a-secret
           npm ci || npm install
 
-      - name: Create .env from GitHub Secret
-        run: |
-          cd Shush-its-a-secret
-          echo "${{ secrets.DOTENV_FILE }}" > .env
-
       - name: Run bot
         run: |
           cd Shush-its-a-secret
@@ -55,7 +50,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # only commit these files if they exist
-          if [ -f "oehbot-log.txt" ]; then git add oeh-bot.log.txt; fi
+          if [ -f "oehbot-log.txt" ]; then git add oehbot-log.txt; fi
           if [ -f "data/pearls.json" ]; then git add data/pearls.json; fi
           git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
           git push origin main

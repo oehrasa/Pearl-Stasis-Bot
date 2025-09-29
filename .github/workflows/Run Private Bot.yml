@@ -52,6 +52,6 @@ jobs:
           cd Shush-its-a-secret
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add oeh-bot.log.txt data/pearls.json
+          git add oehbot-log.txt data/pearls.json
           git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
           git push origin main

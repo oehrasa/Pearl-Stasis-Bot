@@ -11,9 +11,6 @@ permissions:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    env:
-      OEHRASA_PW: ${{ secrets.OEHRASA_PW }}
-      ECCEN_PW: ${{ secrets.ECCEN_PW }}
 
     steps:
       - name: Setup Node.js
@@ -41,10 +38,15 @@ jobs:
           cd Shush-its-a-secret
           npm ci || npm install
 
+      - name: Create .env from GitHub Secret
+        run: |
+          cd Shush-its-a-secret
+          echo "${{ secrets.DOTENV_FILE }}" > .env
+
       - name: Run bot
         run: |
           cd Shush-its-a-secret
-          node fio.js   # change this if your entry script has a different name
+          node fio.js   # entry point of your bot
 
       - name: Commit & push changes
         if: always()
@@ -52,6 +54,8 @@ jobs:
           cd Shush-its-a-secret
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add oehbot-log.txt data/pearls.json
+          # only commit these files if they exist
+          if [ -f "oehbot-log.txt" ]; then git add oeh-bot.log.txt; fi
+          if [ -f "data/pearls.json" ]; then git add data/pearls.json; fi
           git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
           git push origin main

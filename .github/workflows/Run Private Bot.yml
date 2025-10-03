@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: bot-runner
-  cancel-in-progress: false   # new runs wait until the old one finishes
+  cancel-in-progress: false 
 
 jobs:
   run-bot:
@@ -35,7 +35,6 @@ jobs:
         run: |
           git clone git@github.com:oehrasa/Shush-its-a-secret.git
           cd Shush-its-a-secret
-          ls -la
 
       - name: Install dependencies
         run: |
@@ -45,7 +44,7 @@ jobs:
       - name: Run bot
         run: |
           cd Shush-its-a-secret
-          node fio.js   # entry point of your bot
+          node fio.js
 
       - name: Commit & push changes
         if: always()

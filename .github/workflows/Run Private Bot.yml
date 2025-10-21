@@ -6,7 +6,7 @@ on:
     - cron: '0 */6 * * *'
 
 permissions:
-  contents: none
+  contents: write
 
 concurrency:
   group: bot-runner

@@ -55,6 +55,7 @@ jobs:
           if [ -f "oehbot-log.txt" ]; then git add oehbot-log.txt; fi
           if [ -f "data/pearls.json" ]; then git add data/pearls.json; fi
           git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main || true
           git push origin main
 
       - name: Trigger next run

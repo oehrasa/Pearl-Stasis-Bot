@@ -27,14 +27,35 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+
+          ssh-add -l || true
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
       - name: Clone private repo
         run: |
-          git clone git@github.com:oehrasa/Shush-its-a-secret.git
-          cd Shush-its-a-secret
+          set -x
+          rm -rf Shush-its-a-secret || true
+
+          echo "Attempting to clone via SSH..."
+          git clone git@github.com:oehrasa/Shush-its-a-secret.git 2>&1 | tee clone.log || \
+          (echo "Retrying in 5 seconds..." && sleep 5 && git clone git@github.com:oehrasa/Shush-its-a-secret.git 2>&1 | tee clone.log)
+
+          echo "Clone exit code: $?"
+          tail -n +1 clone.log
+
+          if [ ! -d "Shush-its-a-secret" ]; then
+            echo "ERROR: clone failed — see clone.log above"
+            exit 1
+          fi
+
+          echo "Repository cloned successfully."
+          ls -la Shush-its-a-secret
 
       - name: Install dependencies
         run: |
@@ -52,12 +73,14 @@ jobs:
           cd Shush-its-a-secret
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           if [ -f "oehbot-log.txt" ]; then git add oehbot-log.txt; fi
           if [ -f "data/pearls.json" ]; then git add data/pearls.json; fi
           git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
-          git pull --rebase origin main || true
-          git push origin main
 
+          git pull --rebase origin main || true
+          git push origin main || echo "Push skipped or failed."
+          
       - name: Trigger next run
         if: always()
         run: |
@@ -66,3 +89,9 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/Run%20Private%20Bot.yml/dispatches \
             -d '{"ref":"main"}'
+            
+      - name: Cleanup SSH
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_ed25519
+          echo "Cleaned up private SSH key"

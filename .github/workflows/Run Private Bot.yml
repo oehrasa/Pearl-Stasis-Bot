@@ -75,6 +75,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           if [ -f "oehbot-log.txt" ]; then git add oehbot-log.txt; fi
+          if [ -f "scannerch.json" ]; then git add result.json; fi
           if [ -f "data/pearls.json" ]; then git add data/pearls.json; fi
           git commit -m "Update log and pearls.json [skip ci]" || echo "No changes to commit"
 

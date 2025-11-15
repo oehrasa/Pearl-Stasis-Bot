@@ -64,9 +64,8 @@ jobs:
 
       - name: Run bot
         run: |
-          git checkout test1
           cd Shush-its-a-secret
-          node fio.js
+          node ws.js
 
       - name: Commit & push changes
         if: always()

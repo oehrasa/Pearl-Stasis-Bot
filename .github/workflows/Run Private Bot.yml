@@ -65,7 +65,7 @@ jobs:
       - name: Run bot
         run: |
           cd Shush-its-a-secret
-          node fio.js
+          node oeh.js
 
       - name: Commit & push changes
         if: always()
